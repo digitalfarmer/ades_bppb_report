@@ -44,5 +44,4 @@
 				src_model="purchase.request"
 				view_mode="form"
 				target="new" />
-`
 </odoo>

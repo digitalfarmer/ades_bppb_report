@@ -47,7 +47,8 @@ class WizardWizards(models.Model):
             for line in rec.line_ids:
                 product = {'name': line.product_id.name, 'product_uom_id': line.product_uom_id.name,
                            'product_qty': line.product_qty, 'description': line.name,
-                           'specifications': line.specifications, 'estimated_cost': line.estimated_cost
+                           'specifications': line.specifications, 'estimated_cost': line.estimated_cost,
+                           'estimated_cost1': line.estimated_cost1, 'estimated_cost2': line.estimated_cost2
                            }
                 row.append(product)
 
@@ -59,26 +60,22 @@ class WizardWizards(models.Model):
             rows['assigned_to'] = rec.assigned_to.name
             rows['description'] = rec.description
             rows['company_id'] = rec.company_id.name
+            rows['net_amount_total'] = rec.net_amount_total
+            rows['est_amount_total1'] = rec.est_amount_total1
+            rows['est_amount_total2'] = rec.est_amount_total2
 
 
             sheet = workbook.add_sheet(rec.name, cell_overwrite_ok=True)
 
             sheet.write_merge(2, 3, 4, 9, 'Quotation Comparison Form', style2)
-            #sheet.write_merge(2, 3, 7, 8, rows['name'], style2)
             sheet.write_merge(5, 5, 1, 2, 'No. :', style3)
             sheet.write_merge(7, 7, 1, 3, 'No BPPB & Date :', style3)
             sheet.write_merge(7, 7, 4, 5, rows['name'], style3)
             sheet.write_merge(8, 8, 1, 3, 'Head Office / Branch Office :', style3)
             sheet.write_merge(8, 8, 4, 5, rows['company_id'], style3)
-            #sheet.write_merge(5, 5, 3, 4, rows['date_start'], style0)
-            #sheet.write_merge(5, 5, 3, 4, rows['name'], style0)
             sheet.write_merge(5, 5, 8, 9, 'Date :', style3)
             sheet.write_merge(5, 5, 10, 11, rows['date_start'], style0)
-            #sheet.write_merge(5, 5, 10, 11, rows['requested_by'], style0)
-            # sheet.write_merge(6, 6, 8, 9, 'Approver', style3)
-            # sheet.write_merge(6, 6, 10, 11, rows['assigned_to'], style0)
-            # sheet.write_merge(7, 7, 8, 9, 'Company', style3)
-            # sheet.write_merge(7, 7, 10, 11, rows['company_id'], style0)
+
 
             sheet.write_merge(11, 13, 1, 1, 'NO', style1)
             sheet.write_merge(11, 13, 2, 4, 'MATERIAL / ITEM', style1)
@@ -93,18 +90,23 @@ class WizardWizards(models.Model):
             sheet.write(13, 9, 'TOTAL', style1)
             sheet.write(13, 10, 'STUAN', style1)
             sheet.write(13, 11, 'TOTAL', style1)
-
+            sheet.write_merge(26, 26, 1, 5, 'GRANT TOTAL', style1)
+            sheet.write_merge(26, 26, 6, 7, rows['net_amount_total'], style1)
+            sheet.write_merge(26, 26, 8, 9, rows['est_amount_total1'], style1)
+            sheet.write_merge(26, 26, 10, 11, rows['est_amount_total2'], style1)
 
             n = 14
             i = 1
             for product in rows['products']:
                 sheet.write(n, 1, i, style5)
                 sheet.write_merge(n, n, 2, 4, product['name'], style6)
-                #sheet.write(n, 6, product['product_uom_id'], style0)
                 sheet.write(n, 5, product['product_qty'], style0)
                 sheet.write(n, 6, product['product_uom_id'], style0)
                 sheet.write(n, 7, product['estimated_cost'], style0)
-                #sheet.write_merge(n, n, 9, 11, product['specifications'], style0)
+                sheet.write(n, 8, product['product_uom_id'], style0)
+                sheet.write(n, 9, product['estimated_cost1'], style0)
+                sheet.write(n, 10, product['product_uom_id'], style0)
+                sheet.write(n, 11, product['estimated_cost2'], style0)
                 n += 1
                 i += 1
 
@@ -145,7 +147,7 @@ class WizardWizards(models.Model):
             filename = ('/tmp/PurchaseRequestReport-' + str(datetime.today().date()) + '.xls')
             filename2 = ('/tmp/PurchaseRequestReport-' + str(datetime.today().date()) + '.csv')
         else:
-            filename = ('PurchaseRequestReport-' + str(datetime.today().date()) + '.xls')
+            filename = ('PurchaseRequestBPPB-' + str(datetime.today().date()) + '.xls')
             filename2 = ('PurchaseRequestReport-' + str(datetime.today().date()) + '.csv')
 
         filename = filename.split('/')[0]
